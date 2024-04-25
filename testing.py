@@ -1,6 +1,8 @@
 import streamlit as st
 import openai
+import urllib3
 
+urllib3.disable_warnings()
 # Set up OpenAI API
 openai.api_key = "sk-proj-ZHyDCIluXJu5RaWB1KyfT3BlbkFJCyN7H7N6UyWKf3Ck9PYY"
 
@@ -17,13 +19,16 @@ def main():
         # Chat interface
         user_input = st.text_input("You:", "")
         if st.button("Send"):
-            # Call OpenAI API to generate response
-            response = openai.Completion.create(
-                model="text-davinci-003",  # Specify the model
-                prompt=user_input,
-                max_tokens=50
-            )
-            st.text_area("Bot:", response["choices"][0]["text"].strip())
+            try:
+                # Call OpenAI API to generate response
+                response = openai.Completion.create(
+                    model="text-davinci-003",
+                    prompt=user_input,
+                    max_tokens=50
+                )
+                st.text_area("Bot:", response.choices[0].text.strip())
+            except Exception as e:
+                st.error(f"Error: {e}")
 
 if __name__ == "__main__":
     main()
